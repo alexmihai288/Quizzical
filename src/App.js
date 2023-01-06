@@ -1,25 +1,99 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useEffect,useState} from "react";
+import Home from "./components/Home";
+import Quiz from "./components/Quiz";
+import leftimage from "./images/leftimg.png";
+import rightimage from "./images/rightimg.png"
+import {nanoid} from "nanoid"
 
-function App() {
+export default function App(){
+
+  //Handle first page preview
+  const [homePage,setHomePage] = useState(true);
+  function setPage(){
+    setHomePage(false);
+  }
+
+  const [quizies,setQuizies] = useState([]);
+  
+  // API : https://opentdb.com/api.php?amount=5&type=multiple
+
+  useEffect(()=>{
+    getData();
+    async function getData(){
+      const APIrequest = await fetch('https://opentdb.com/api.php?amount=5&type=multiple');
+      const APIresponse = await APIrequest.json();
+      const data = APIresponse;
+      setQuizies(data.results.map(quiz=>{
+        const newQuiz = {
+            ...quiz,
+            id:nanoid(),
+            correct_answer: {value:quiz.correct_answer,id:nanoid(),isChecked:false},
+            incorrect_answers:quiz.incorrect_answers.map(ie=>({value:ie,id:nanoid(),isChecked:false})),
+        }
+        return newQuiz;
+      }));
+    }
+  },[]);
+
+  function toggleCheck(childId,parentId){
+    setQuizies(prevQuizies=>{
+      return prevQuizies.map(quiz=>{
+        if(quiz.id===parentId){
+          return {
+            ...quiz,
+            correct_answer:quiz.correct_answer.id===childId ? {...quiz.correct_answer,isChecked:!quiz.correct_answer.isChecked}:{...quiz.correct_answer,isChecked:false},
+            incorrect_answers:quiz.incorrect_answers.map(ie=>{
+              return {
+                ...ie,
+                isChecked: ie.id === childId ? {...ie,isChecked:!ie.isChecked}:false
+              }
+            })
+          }
+        }else{
+          return quiz;
+        }
+      })
+    })
+  }
+
+  const elements = quizies.map(quiz=>{
+    return <Quiz {...quiz} key={nanoid()} toggleCheck={toggleCheck}/>
+  })
+
+  const [buttonText,setButtonText]=useState('Check answers')
+  function handleClick(){
+    setButtonText(prevText=>prevText==='Check answers' ? "Play again":"Check answers");
+    setScore();
+  }
+  const [showScore,setShowScore] = useState(false);
+  function setScore(){
+    setShowScore(prevState=>!prevState);
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="font-[Karla] bg-grayishWhite">
+      {homePage ? <Home setPage={setPage}/> :
+      
+      //Questions
+        <div className="quizContainer overflow-x-hidden relative py-[100px] min-h-[100vh] flex flex-col items-center justify-center">
+           <div className="container mx-auto flex flex-col items-center justify-center">
+              <div className="space-y-[80px]">
+                {elements}
+              </div>
+              <div className="checkAnswersContainer mt-12 flex gap-[15px] items-center whitespace-nowrap">
+                  {showScore && <p className="mt-8 text-darkishBlue font-bold text-[22px]">You scored 3/5 correct answers</p>}
+                  <button onClick={handleClick} className="bg-darkBlue border text-grayishWhite px-5 whitespace-nowrap py-2 text-[17px] xs:py-3 xs:text-[19px] rounded-[15px] cursor-pointer mt-8 w-[100%]  active:scale-95 active:shadow-[inset_0px_0px_4px_darkBlue] duration-[.3s]">{buttonText}</button>
+                </div>
+           </div>
+          
+           {/* Absolute images   */}
+           <div className="left-image absolute bottom-0 -left-[300px] xs:-left-[225px] md:-left-[200px]">
+                <img src={leftimage} className="w-60"/>
+            </div>    
+            <div className="right-image absolute top-0 -right-[270px] xs:-right-[270px] md:-right-[200px]">
+                <img src={rightimage} className="w-96"/>
+            </div>
+        </div>
+      }
     </div>
-  );
+  )
 }
-
-export default App;
