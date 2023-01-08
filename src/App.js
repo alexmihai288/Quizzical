@@ -2,8 +2,8 @@ import React,{useEffect,useState} from "react";
 import Home from "./components/Home";
 import Quiz from "./components/Quiz";
 import leftimage from "./images/leftimg.png";
-import rightimage from "./images/rightimg.png"
-import {nanoid} from "nanoid"
+import rightimage from "./images/rightimg.png";
+import {nanoid} from "nanoid";
 
 export default function App(){
 
@@ -23,32 +23,57 @@ export default function App(){
       const APIrequest = await fetch('https://opentdb.com/api.php?amount=5&type=multiple');
       const APIresponse = await APIrequest.json();
       const data = APIresponse;
-      setQuizies(data.results.map(quiz=>{
+
+      const quizElements = data.results.map(quiz=>{
+
         const newQuiz = {
             ...quiz,
             id:nanoid(),
             correct_answer: {value:quiz.correct_answer,id:nanoid(),isChecked:false},
             incorrect_answers:quiz.incorrect_answers.map(ie=>({value:ie,id:nanoid(),isChecked:false})),
         }
-        return newQuiz;
-      }));
+        const allAnswers = newQuiz.incorrect_answers.map(ie=>ie);
+        const correctAnswer = newQuiz.correct_answer;
+        allAnswers.push(correctAnswer);
+        const shuffledAnswers = shuffleArray(allAnswers);
+        const updatedQuiz = {
+          ...newQuiz,
+          shuffledAnswers:shuffledAnswers
+        }
+        return updatedQuiz;
+      });
+      console.log(quizElements);
+      setQuizies(quizElements);
     }
   },[]);
+
+  function shuffleArray(arr){
+    const newArray = [...arr];
+      for(let i=0;i<newArray.length;i++){
+        const randNum=Math.floor(Math.random()*newArray.length);
+        const aux = newArray[i];
+        newArray[i]=newArray[randNum];
+        newArray[randNum]=aux;
+      }
+      return newArray;
+  }
 
   function toggleCheck(childId,parentId){
     setQuizies(prevQuizies=>{
       return prevQuizies.map(quiz=>{
         if(quiz.id===parentId){
-          return {
+          const newQuiz={
             ...quiz,
             correct_answer:quiz.correct_answer.id===childId ? {...quiz.correct_answer,isChecked:!quiz.correct_answer.isChecked}:{...quiz.correct_answer,isChecked:false},
             incorrect_answers:quiz.incorrect_answers.map(ie=>{
               return {
                 ...ie,
-                isChecked: ie.id === childId ? {...ie,isChecked:!ie.isChecked}:false
+                isChecked: ie.id === childId ? !ie.isChecked:false
               }
-            })
+            }),
+            shuffledAnswers:quiz.shuffledAnswers.map(oldQuiz=>oldQuiz.id==childId ? {...oldQuiz,isChecked:!oldQuiz.isChecked}:{...oldQuiz,isChecked:false})
           }
+          return newQuiz;
         }else{
           return quiz;
         }
