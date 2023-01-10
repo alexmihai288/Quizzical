@@ -45,7 +45,7 @@ export default function App(){
       console.log(quizElements);
       setQuizies(quizElements);
     }
-  },[]);
+  },[homePage]);
 
   function shuffleArray(arr){
     const newArray = [...arr];
@@ -91,7 +91,6 @@ export default function App(){
     setScore();
     checkCorrectAnswers();
     setCorrect();
-    showCorrectAnswer();
   }
   const [showScore,setShowScore] = useState(false);
   function setScore(){
@@ -130,6 +129,12 @@ export default function App(){
     })
   }
 
+  function playAgain(){
+    setHomePage(true)
+    setShowScore(false)
+    setCorrectAnswers(0)  
+    setButtonText("Check answers")
+  }
 
   return (
     <div className="font-[Karla] bg-grayishWhite">
@@ -143,7 +148,7 @@ export default function App(){
               </div>
               <div className="checkAnswersContainer mt-12 flex gap-[15px] items-center whitespace-nowrap">
                   {showScore && <p className="mt-8 text-darkishBlue font-bold text-[22px]">You scored {correctAnswers}/5 correct answers</p>}
-                  <button onClick={handleClick} className="bg-darkBlue border text-grayishWhite px-5 whitespace-nowrap py-2 text-[17px] xs:py-3 xs:text-[19px] rounded-[15px] cursor-pointer mt-8 w-[100%]  active:scale-95 active:shadow-[inset_0px_0px_4px_darkBlue] duration-[.3s]">{buttonText}</button>
+                  <button onClick={buttonText==="Check answers" ? handleClick : playAgain} className="bg-darkBlue border text-grayishWhite px-5 whitespace-nowrap py-2 text-[17px] xs:py-3 xs:text-[19px] rounded-[15px] cursor-pointer mt-8 w-[100%]  active:scale-95 active:shadow-[inset_0px_0px_4px_darkBlue] duration-[.3s]">{buttonText}</button>
                 </div>
            </div>
           
