@@ -13,8 +13,18 @@ export default function Quiz(props){
                 <div className="questionBody flex items-center justify-evenly gap-[20px]">
                    {
                     updatedArray.map(anws=>{
+                        let color="#d6dbf5";
+                        if(anws.isChecked && anws.isVerified){
+                            if(anws.value===props.correct_answer.value){
+                                color="#94d7a2";
+                            }else {
+                                color="#f6d9db";
+                            }
+                        }else if(!anws.isChecked){
+                            color="transparent";
+                        }
                         const styles = {
-                            backgroundColor:anws.isChecked ? "#d6dbf5":"transparent",
+                            backgroundColor:color,
                             border:anws.isChecked ? "none":"2px solid #4d5b9e",
                             padding:"5px 20px",
                             borderRadius:"15px",
