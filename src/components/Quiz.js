@@ -23,9 +23,12 @@ export default function Quiz(props){
                         }else if(!anws.isChecked){
                             color="transparent";
                         }
+                        if(props.clicked && anws.afterCheck){
+                            color="#94d7a2"
+                        }
                         const styles = {
                             backgroundColor:color,
-                            border:anws.isChecked ? "none":"2px solid #4d5b9e",
+                            border:anws.afterCheck && props.clicked? "none":anws.isChecked ?"none":"2px solid #4d5b9e",
                             padding:"5px 20px",
                             borderRadius:"15px",
                             fontWeight:"medium",

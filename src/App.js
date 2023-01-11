@@ -28,9 +28,10 @@ export default function App(){
 
         const newQuiz = {
             ...quiz,
+            clicked:false,
             id:nanoid(),
-            correct_answer: {value:quiz.correct_answer,id:nanoid(),isChecked:false,isVerified:false},
-            incorrect_answers:quiz.incorrect_answers.map(ie=>({value:ie,id:nanoid(),isChecked:false,isVerified:false})),
+            correct_answer: {value:quiz.correct_answer,id:nanoid(),isChecked:false,isVerified:false,afterCheck:true},
+            incorrect_answers:quiz.incorrect_answers.map(ie=>({value:ie,id:nanoid(),isChecked:false,isVerified:false,afterCheck:false})),
         }
         const allAnswers = newQuiz.incorrect_answers.map(ie=>ie);
         const correctAnswer = newQuiz.correct_answer;
@@ -102,6 +103,7 @@ export default function App(){
       return prevQuizies.map(quiz=>{
         return {
           ...quiz,
+          clicked:true,
           correct_answer:quiz.correct_answer.isChecked ? {...quiz.correct_answer,isVerified:true}:{...quiz.correct_answer},
           incorrect_answers:quiz.incorrect_answers.map(ie=>{
             return {
