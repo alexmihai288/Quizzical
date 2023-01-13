@@ -3,14 +3,13 @@ import React from "react";
 
 export default function Quiz(props){
     const updatedArray = props.shuffledAnswers;
-    console.log(updatedArray);
     return (
         <div className="quizWrapper">
             <div className="quiz pb-4 border-b-[2px] border-[#e8eaf5] space-y-6">
                 <div className="questionHeader">
                     <h1 className="text-darkishBlue max-w-[700px] font-bold text-[18px] xs:text-[22px] sm:text-[24px]">{props.question}</h1>
                 </div>
-                <div className="questionBody flex items-center justify-evenly gap-[20px]">
+                <div className="questionBody grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 place-items-center gap-[20px]">
                    {
                     updatedArray.map(anws=>{
                         let color="#d6dbf5";
@@ -35,7 +34,11 @@ export default function Quiz(props){
                             color:"#293264",
                             cursor:"pointer"
                         }
-                        return <button key={anws.id} style={styles} onClick={()=>props.toggleCheck(anws.id,props.id)}>{anws.value}</button>
+                        const isDisableValue = anws.isDisabled;
+                        if(isDisableValue)
+                            return <button type="button" className="max-w-[220px] w-[100%]" disabled key={anws.id} style={styles} onClick={()=>props.toggleCheck(anws.id,props.id)}>{anws.value}</button>
+                        else
+                            return <button key={anws.id} className="max-w-[220px] w-[100%]" style={styles} onClick={()=>props.toggleCheck(anws.id,props.id)}>{anws.value}</button>
                     })
                    }
                 </div>
