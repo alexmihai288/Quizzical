@@ -4,7 +4,7 @@ import Quiz from "./components/Quiz";
 import leftimage from "./images/leftimg.png";
 import rightimage from "./images/rightimg.png";
 import {nanoid} from "nanoid";
-import Confetti from 'react-confetti';
+import Confetti from 'react-confetti'
 
 export default function App(){
 
