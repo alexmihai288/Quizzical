@@ -3,7 +3,7 @@ import Home from "./components/Home";
 import Quiz from "./components/Quiz";
 import leftimage from "./images/leftimg.png";
 import rightimage from "./images/rightimg.png";
-import {nanoid} from "nanoid";
+import {nanoid} from "nanoid"
 
 export default function App(){
 
