@@ -6,6 +6,7 @@ import rightimage from "./images/rightimg.png";
 import {nanoid} from "nanoid";
 import Confetti from 'react-confetti'
 
+
 export default function App(){
 
   //Handle first page preview
